@@ -1,23 +1,47 @@
-specVersion: 0.0.1
+specVersion: 0.0.5
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum
-    name: undefined
+  - name: NilERC721FactoryV2
+    kind: ethereum/contract
     network: matic
     source:
-      address: "0x954d9528bb9651e3eb9b68dad191214a654339fd"
+      address: "0xF59986f584B909A16B2c7B4E212869d522c2B128"
       abi: NilERC721FactoryV2
+      startBlock: 28243890
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Created
+        - NilCollection
       abis:
         - name: NilERC721FactoryV2
           file: ./abis/NilERC721FactoryV2.json
+        - name: NilERC721TemplateV1
+          file: ./abis/NilERC721TemplateV1.json
       eventHandlers:
         - event: Created(uint256,address)
           handler: handleCreated
-      file: ./src/nil-erc-721-factory-v-2.ts
+      file: ./src/NilERC721FactoryV2Handler.ts
+templates:
+  - name: NilERC721TemplateV1
+    kind: ethereum/contract
+    network: matic
+    source:
+      abi: NilERC721TemplateV1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/NilERC721TemplateV1Handler.ts
+      entities:
+        - NilCollection
+        - Token
+        - Owner
+      abis:
+        - name: NilERC721TemplateV1
+          file: ./abis/NilERC721TemplateV1.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
